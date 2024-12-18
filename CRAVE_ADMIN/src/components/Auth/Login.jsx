@@ -14,10 +14,11 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import { axiosInstance } from "../../config/api";
+
 import { useAuth } from "./AuthContext";
 import toast from "react-hot-toast";
 import { useApp } from "../AppContext/AppContext";
+import { axiosInstance } from "../../Config/api";
 
 const initialValue = {
   email: "",
