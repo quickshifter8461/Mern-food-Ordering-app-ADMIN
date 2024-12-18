@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Avatar, Typography, Button, Card } from "@mui/material";
-import { axiosInstance } from "../../config/api";
+import { axiosInstance } from "../../Config/api";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";

@@ -18,7 +18,8 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { Field, Form, Formik, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { axiosInstance } from "../../config/api";
+import { axiosInstance } from "../../Config/api";
+
 
 const initialValue = {
   fullName: "",

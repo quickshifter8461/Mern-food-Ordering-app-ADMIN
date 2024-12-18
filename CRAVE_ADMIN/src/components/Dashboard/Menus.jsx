@@ -10,7 +10,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
-import { axiosInstance } from "../../config/api";
+import { axiosInstance } from "../../Config/api";
 import { useNavigate } from "react-router-dom";
 
 const MenuPage = () => {

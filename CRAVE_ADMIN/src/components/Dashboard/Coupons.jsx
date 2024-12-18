@@ -19,7 +19,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
-import { axiosInstance } from "../../config/api"; // Ensure axiosInstance is properly set up
+import { axiosInstance } from "../../Config/api"; // Ensure axiosInstance is properly set up
 import toast from "react-hot-toast";
 
 const CouponPage = () => {

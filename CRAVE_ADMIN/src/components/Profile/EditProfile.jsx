@@ -13,7 +13,7 @@ import { useTheme } from "@mui/material/styles";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FiCamera, FiEye, FiEyeOff } from "react-icons/fi";
-import { axiosInstance } from "../../config/api";
+import { axiosInstance } from "../../Config/api";
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
 

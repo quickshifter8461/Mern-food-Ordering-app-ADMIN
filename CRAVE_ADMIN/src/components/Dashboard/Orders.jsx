@@ -18,7 +18,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { axiosInstance } from "../../config/api";
+import { axiosInstance } from "../../Config/api";
 import toast from "react-hot-toast";
 
 const Orders = () => {

@@ -19,7 +19,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
-import { axiosInstance } from "../../config/api";
+import { axiosInstance } from "../../Config/api";
 import { useNavigate } from "react-router-dom";
 
 const RestaurantPage = () => {
