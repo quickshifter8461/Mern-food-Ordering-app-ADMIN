@@ -9,6 +9,13 @@ import {
   Grid,
   IconButton,
   CardMedia,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Paper,
 } from "@mui/material";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { axiosInstance } from "../../Config/api";
@@ -162,51 +169,58 @@ const MenuPage = () => {
               Add Menu Item
             </Button>
           </Box>
-          <Grid container spacing={2}>
-            {menuItems.map((menuItem) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={menuItem._id}>
-                <Card sx={{ width: 250 }}>
-                  <CardMedia
-                    image={menuItem.image}
-                    title={menuItem.name}
-                    sx={{
-                      width: { xs: "100%", sm: 250 },
-                      height: { xs: "auto", sm: 200 },
-                      borderRadius: 2,
-                      objectFit: "cover",
-                    }}
-                  />
-                  <CardContent>
-                    <Typography variant="h6">{menuItem.name}</Typography>
-                    <Typography variant="body2">
-                      {menuItem.description}
-                    </Typography>
-                    <Typography variant="body2">
-                      Price: ₹{menuItem.price.toFixed(2)}
-                    </Typography>
-                    <Typography variant="body2">
+
+          <TableContainer
+            component={Paper}
+            sx={{
+              backgroundColor: "background.paper",
+              boxShadow: 3,
+              borderRadius: 2,
+              overflowX: "auto",
+            }}
+          >
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Description</TableCell>
+                  <TableCell>Price</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {menuItems.map((menuItem) => (
+                  <TableRow key={menuItem._id}>
+                    <TableCell>{menuItem.name}</TableCell>
+                    <TableCell>{menuItem.description}</TableCell>
+                    <TableCell>₹{menuItem.price.toFixed(2)}</TableCell>
+                    <TableCell>
                       {menuItem.isAvailable ? "Available" : "Out of stock"}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <IconButton
-                      onClick={() =>
-                        handleEditMenuItem(menuItem._id, selectedRestaurant._id)
-                      }
-                    >
-                      <FiEdit />
-                    </IconButton>
-                    <IconButton
-                      color="error"
-                      onClick={() => handleDeleteMenuItem(menuItem._id)}
-                    >
-                      <FiTrash2 />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        onClick={() =>
+                          handleEditMenuItem(
+                            menuItem._id,
+                            selectedRestaurant._id
+                          )
+                        }
+                      >
+                        <FiEdit />
+                      </IconButton>
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDeleteMenuItem(menuItem._id)}
+                      >
+                        <FiTrash2 />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </>
       )}
     </Box>
