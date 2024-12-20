@@ -21,8 +21,10 @@ import {
 import { Delete, Edit } from "@mui/icons-material";
 import { axiosInstance } from "../../Config/api"; // Ensure axiosInstance is properly set up
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const CouponPage = () => {
+  const navigate = useNavigate();
   const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -55,7 +57,14 @@ const CouponPage = () => {
 
   const handleOpenDialog = (
     mode,
-    coupon = { _id: null, code: "", discountPercentage: "", maxDiscountValue: "", minOrderValue: "", expiryDate: "" }
+    coupon = {
+      _id: null,
+      code: "",
+      discountPercentage: "",
+      maxDiscountValue: "",
+      minOrderValue: "",
+      expiryDate: "",
+    }
   ) => {
     setDialogMode(mode);
     setCurrentCoupon(coupon);
@@ -64,7 +73,14 @@ const CouponPage = () => {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    setCurrentCoupon({ _id: null, code: "", discountPercentage: "", maxDiscountValue: "", minOrderValue: "", expiryDate: "" });
+    setCurrentCoupon({
+      _id: null,
+      code: "",
+      discountPercentage: "",
+      maxDiscountValue: "",
+      minOrderValue: "",
+      expiryDate: "",
+    });
   };
 
   const handleInputChange = (e) => {
@@ -75,11 +91,17 @@ const CouponPage = () => {
   const handleSaveCoupon = async () => {
     try {
       if (dialogMode === "add") {
-        const response = await axiosInstance.post("/coupon/create-coupon", currentCoupon);
+        const response = await axiosInstance.post(
+          "/coupon/create-coupon",
+          currentCoupon
+        );
         toast.success("Coupon created successfully!");
         setCoupons((prev) => [...prev, response.data.coupon]);
       } else if (dialogMode === "edit") {
-        const response = await axiosInstance.put(`/coupon/update-coupon/${currentCoupon._id}`, currentCoupon);
+        const response = await axiosInstance.put(
+          `/coupon/update-coupon/${currentCoupon._id}`,
+          currentCoupon
+        );
         setCoupons((prev) =>
           prev.map((coupon) =>
             coupon._id === currentCoupon._id ? response.data.coupon : coupon
@@ -104,7 +126,9 @@ const CouponPage = () => {
       setError(err.message || "Failed to delete coupon.");
     }
   };
-
+  const handleHome = () => {
+    navigate("/home");
+  };
   return (
     <Box p={3}>
       <Typography variant="h4" fontWeight="bold" gutterBottom>
@@ -113,7 +137,11 @@ const CouponPage = () => {
 
       {/* Add New Coupon Button */}
       <Box display="flex" justifyContent="flex-start" mb={2}>
+        <Button variant="contained" color="primary" onClick={handleHome}>
+          Back to Home
+        </Button>
         <Button
+          sx={{ marginLeft: 2 }}
           variant="contained"
           color="primary"
           onClick={() => handleOpenDialog("add")}

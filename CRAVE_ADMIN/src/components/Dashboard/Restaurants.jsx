@@ -134,6 +134,10 @@ const RestaurantPage = () => {
     navigate(`/edit/restaurants`, { state: { id } });
   };
 
+  const handleHome = () => {
+    navigate("/home");
+  };
+
   return (
     <Box p={3}>
       <Typography variant="h4" fontWeight="bold" gutterBottom>
@@ -142,7 +146,11 @@ const RestaurantPage = () => {
 
       {/* Add New Restaurant Button */}
       <Box display="flex" justifyContent="flex-start" mb={2}>
+        <Button variant="contained" color="primary" onClick={handleHome}>
+          Back to Home
+        </Button>
         <Button
+          sx={{ marginLeft: 2 }}
           variant="contained"
           color="primary"
           onClick={handleAddRestaurant}
@@ -236,11 +244,7 @@ const RestaurantPage = () => {
             <Grid item xs={12}>
               <Button variant="contained" component="label" fullWidth>
                 Upload Image
-                <input
-                  type="file"
-                  hidden
-                  onChange={handleImageChange}
-                />
+                <input type="file" hidden onChange={handleImageChange} />
               </Button>
               {selectedImage && (
                 <Typography variant="body2">{selectedImage.name}</Typography>

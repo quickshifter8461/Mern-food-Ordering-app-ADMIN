@@ -8,6 +8,7 @@ import {
   CardActions,
   Grid,
   IconButton,
+  CardMedia,
 } from "@mui/material";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { axiosInstance } from "../../Config/api";
@@ -83,6 +84,10 @@ const MenuPage = () => {
     });
   };
 
+  const handleHome = () => {
+    navigate("/home");
+  };
+
   return (
     <Box sx={{ padding: 4 }}>
       {!selectedRestaurant ? (
@@ -90,13 +95,40 @@ const MenuPage = () => {
           <Typography variant="h4" gutterBottom>
             Select a Restaurant
           </Typography>
+          <Box display="flex" justifyContent="flex-start" mb={2}>
+            <Button variant="contained" color="primary" onClick={handleHome}>
+              Back to Home
+            </Button>
+          </Box>
           <Grid container spacing={2}>
             {restaurants.map((restaurant) => (
-              <Grid item xs={12} sm={6} md={4} key={restaurant._id}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                lg={3}
+                xl={2}
+                key={restaurant._id}
+              >
                 <Card
                   onClick={() => handleRestaurantClick(restaurant)}
-                  sx={{ cursor: "pointer", "&:hover": { boxShadow: 6 } }}
+                  sx={{
+                    cursor: "pointer",
+                    "&:hover": { boxShadow: 6 },
+                    width: 250,
+                  }}
                 >
+                  <CardMedia
+                    sx={{
+                      width: { xs: "100%", sm: 250 },
+                      height: { xs: "auto", sm: 200 },
+                      borderRadius: 2,
+                      objectFit: "cover",
+                    }}
+                    image={restaurant.image}
+                    title={restaurant.name}
+                  />
                   <CardContent>
                     <Typography variant="h6">{restaurant.name}</Typography>
                     <Typography variant="body2">
@@ -114,26 +146,36 @@ const MenuPage = () => {
             Menu for {selectedRestaurant.name}
           </Typography>
           <Box display="flex" justifyContent="flex-start" mb={2}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setSelectedRestaurant(null)}
-          >
-            Back to Restaurants
-          </Button>
-          <Button
-          sx={{marginLeft: 2}}
-            variant="contained"
-            color="secondary"
-            onClick={handleAddMenuItem}
-          >
-            Add Menu Item
-          </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setSelectedRestaurant(null)}
+            >
+              Back to Restaurants
+            </Button>
+            <Button
+              sx={{ marginLeft: 2 }}
+              variant="contained"
+              color="secondary"
+              onClick={handleAddMenuItem}
+            >
+              Add Menu Item
+            </Button>
           </Box>
           <Grid container spacing={2}>
             {menuItems.map((menuItem) => (
-              <Grid item xs={12} sm={6} md={4} key={menuItem._id}>
-                <Card>
+              <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={menuItem._id}>
+                <Card sx={{ width: 250 }}>
+                  <CardMedia
+                    image={menuItem.image}
+                    title={menuItem.name}
+                    sx={{
+                      width: { xs: "100%", sm: 250 },
+                      height: { xs: "auto", sm: 200 },
+                      borderRadius: 2,
+                      objectFit: "cover",
+                    }}
+                  />
                   <CardContent>
                     <Typography variant="h6">{menuItem.name}</Typography>
                     <Typography variant="body2">
@@ -165,7 +207,6 @@ const MenuPage = () => {
               </Grid>
             ))}
           </Grid>
-          
         </>
       )}
     </Box>
