@@ -17,6 +17,7 @@ import {
   DialogTitle,
   TextField,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import { axiosInstance } from "../../Config/api"; // Ensure axiosInstance is properly set up
@@ -129,6 +130,32 @@ const CouponPage = () => {
   const handleHome = () => {
     navigate("/home");
   };
+
+  if (loading)
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100vw",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+
+  if (error)
+    return (
+      <div className="text-center py-10">
+        <p className="text-red-500 pb-10">Something went wrong: {error}</p>
+        <Button variant="contained" onClick={() => window.location.reload()}>
+          Retry
+        </Button>
+      </div>
+    );
+
   return (
     <Box p={3}>
       <Typography variant="h4" fontWeight="bold" gutterBottom>

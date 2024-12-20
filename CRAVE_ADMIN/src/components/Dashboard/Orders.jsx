@@ -18,6 +18,7 @@ import {
   Select,
   MenuItem,
   CardMedia,
+  CircularProgress,
 } from "@mui/material";
 import { axiosInstance } from "../../Config/api";
 import toast from "react-hot-toast";
@@ -29,16 +30,22 @@ const Orders = () => {
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
   const [filterStatus, setFilterStatus] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
+        setLoading(true);
         const response = await axiosInstance.get(
           "/restaurants/all-restaurants"
         );
         setRestaurants(response.data);
       } catch (error) {
+        setError(error.message || "Failed to fetch restaurants.");
         console.error("Error fetching restaurants:", error);
+      }finally{
+        setLoading(false);
       }
     };
     fetchRestaurants();
@@ -46,6 +53,7 @@ const Orders = () => {
 
   const fetchOrders = async (restaurantId) => {
     try {
+      setLoading(true);
       const response = await axiosInstance.get(
         `/order/get-all-restaurant-orders/${restaurantId}`
       );
@@ -53,6 +61,8 @@ const Orders = () => {
       setFilteredOrders(response.data.orders);
     } catch (error) {
       console.error("Error fetching orders:", error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -109,7 +119,33 @@ const Orders = () => {
 
   const handleHome = () => {
     navigate("/home");
-  }
+  };
+
+  if (loading)
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100vw",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+
+  if (error)
+    return (
+      <div className="text-center py-10">
+        <p className="text-red-500 pb-10">Something went wrong: {error}</p>
+        <Button variant="contained" onClick={() => window.location.reload()}>
+          Retry
+        </Button>
+      </div>
+    );
+
   return (
     <Box sx={{ padding: 4 }}>
       {!selectedRestaurant ? (

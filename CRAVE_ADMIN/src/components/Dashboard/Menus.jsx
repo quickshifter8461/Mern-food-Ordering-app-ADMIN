@@ -16,6 +16,7 @@ import {
   TableCell,
   TableBody,
   Paper,
+  CircularProgress,
 } from "@mui/material";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { axiosInstance } from "../../Config/api";
@@ -25,45 +26,48 @@ const MenuPage = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Fetch all restaurants
+  
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const response = await axiosInstance.get(
-          "/restaurants/all-restaurants"
-        );
+        setLoading(true);
+        const response = await axiosInstance.get("/restaurants/all-restaurants");
         setRestaurants(response.data);
       } catch (error) {
+        setError(error.message || "Failed to fetch restaurants.");
         console.error("Error fetching restaurants:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchRestaurants();
   }, []);
 
-  // Fetch menu items for the selected restaurant
+  
   const fetchMenuItems = async (restaurantId) => {
     try {
-      const response = await axiosInstance.get(
-        `/restaurants/${restaurantId}/menu`
-      );
+      setLoading(true);  
+      const response = await axiosInstance.get(`/restaurants/${restaurantId}/menu`);
       setMenuItems(response.data);
     } catch (error) {
       console.error("Error fetching menu items:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Handle restaurant selection
+
   const handleRestaurantClick = (restaurant) => {
     setSelectedRestaurant(restaurant);
     fetchMenuItems(restaurant._id);
   };
 
-  // Handle deleting a menu item
   const handleDeleteMenuItem = async (menuItemId) => {
     try {
-      // Confirm deletion before proceeding
       if (window.confirm("Are you sure you want to delete this menu item?")) {
         await axiosInstance.delete(
           `/restaurants/menuitems/${selectedRestaurant._id}/${menuItemId}`
@@ -77,14 +81,12 @@ const MenuPage = () => {
     }
   };
 
-  // Navigate to edit menu item page
   const handleEditMenuItem = (menuItemId, restaurantId) => {
     navigate(`/edit/menus`, {
       state: { menuItemId: menuItemId, restaurantId: restaurantId },
     });
   };
 
-  // Navigate to add new menu item page
   const handleAddMenuItem = () => {
     navigate(`/edit/menus`, {
       state: { restaurantId: selectedRestaurant._id },
@@ -94,6 +96,31 @@ const MenuPage = () => {
   const handleHome = () => {
     navigate("/home");
   };
+
+  if (loading)
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100vw",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+
+  if (error)
+    return (
+      <div className="text-center py-10">
+        <p className="text-red-500 pb-10">Something went wrong: {error}</p>
+        <Button variant="contained" onClick={() => window.location.reload()}>
+          Retry
+        </Button>
+      </div>
+    );
 
   return (
     <Box sx={{ padding: 4 }}>
@@ -190,34 +217,39 @@ const MenuPage = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {menuItems.map((menuItem) => (
-                  <TableRow key={menuItem._id}>
-                    <TableCell>{menuItem.name}</TableCell>
-                    <TableCell>{menuItem.description}</TableCell>
-                    <TableCell>₹{menuItem.price.toFixed(2)}</TableCell>
-                    <TableCell>
-                      {menuItem.isAvailable ? "Available" : "Out of stock"}
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        onClick={() =>
-                          handleEditMenuItem(
-                            menuItem._id,
-                            selectedRestaurant._id
-                          )
-                        }
-                      >
-                        <FiEdit />
-                      </IconButton>
-                      <IconButton
-                        color="error"
-                        onClick={() => handleDeleteMenuItem(menuItem._id)}
-                      >
-                        <FiTrash2 />
-                      </IconButton>
+                {menuItems.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5} align="center">
+                      No menu items available.
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  menuItems.map((menuItem) => (
+                    <TableRow key={menuItem._id}>
+                      <TableCell>{menuItem.name}</TableCell>
+                      <TableCell>{menuItem.description}</TableCell>
+                      <TableCell>₹{menuItem.price.toFixed(2)}</TableCell>
+                      <TableCell>
+                        {menuItem.isAvailable ? "Available" : "Out of stock"}
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          onClick={() =>
+                            handleEditMenuItem(menuItem._id, selectedRestaurant._id)
+                          }
+                        >
+                          <FiEdit />
+                        </IconButton>
+                        <IconButton
+                          color="error"
+                          onClick={() => handleDeleteMenuItem(menuItem._id)}
+                        >
+                          <FiTrash2 />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </TableContainer>
