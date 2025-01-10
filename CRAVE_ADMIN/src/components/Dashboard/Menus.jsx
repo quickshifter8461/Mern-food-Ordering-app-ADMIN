@@ -17,6 +17,7 @@ import {
   TableBody,
   Paper,
   CircularProgress,
+  TextField,
 } from "@mui/material";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { axiosInstance } from "../../Config/api";
@@ -28,14 +29,17 @@ const MenuPage = () => {
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [restaurantSearchQuery, setRestaurantSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
         setLoading(true);
-        const response = await axiosInstance.get("/restaurants/all-restaurants");
+        const response = await axiosInstance.get(
+          "/restaurants/all-restaurants"
+        );
         setRestaurants(response.data);
       } catch (error) {
         setError(error.message || "Failed to fetch restaurants.");
@@ -47,11 +51,12 @@ const MenuPage = () => {
     fetchRestaurants();
   }, []);
 
-  
   const fetchMenuItems = async (restaurantId) => {
     try {
-      setLoading(true);  
-      const response = await axiosInstance.get(`/restaurants/${restaurantId}/menu`);
+      setLoading(true);
+      const response = await axiosInstance.get(
+        `/restaurants/${restaurantId}/menu`
+      );
       setMenuItems(response.data);
     } catch (error) {
       console.error("Error fetching menu items:", error);
@@ -59,7 +64,6 @@ const MenuPage = () => {
       setLoading(false);
     }
   };
-
 
   const handleRestaurantClick = (restaurant) => {
     setSelectedRestaurant(restaurant);
@@ -97,6 +101,14 @@ const MenuPage = () => {
     navigate("/home");
   };
 
+  const filteredMenuItems = menuItems.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredRestaurants = restaurants.filter((restaurant) =>
+    restaurant.name.toLowerCase().includes(restaurantSearchQuery.toLowerCase())
+  );
+
   if (loading)
     return (
       <Box
@@ -129,13 +141,22 @@ const MenuPage = () => {
           <Typography variant="h4" gutterBottom>
             Select a Restaurant
           </Typography>
-          <Box display="flex" justifyContent="flex-start" mb={2}>
-            <Button variant="contained" color="primary" onClick={handleHome}>
+          <Box className="flex flex-col sm:flex-row justify-start mb-2 gap-2">
+            <Button className="w-full sm:w-auto" variant="contained" color="primary" onClick={handleHome}>
               Back to Home
             </Button>
+            <TextField
+              label="Search restaurants"
+              variant="outlined"
+              size="small"
+              value={restaurantSearchQuery}
+              onChange={(e) => setRestaurantSearchQuery(e.target.value)}
+              
+              className="w-full sm:w-auto sm:m-2"
+            />
           </Box>
           <Grid container spacing={2}>
-            {restaurants.map((restaurant) => (
+            {filteredRestaurants.map((restaurant) => (
               <Grid
                 item
                 xs={12}
@@ -179,22 +200,33 @@ const MenuPage = () => {
           <Typography variant="h4" gutterBottom>
             Menu for {selectedRestaurant.name}
           </Typography>
-          <Box display="flex" justifyContent="flex-start" mb={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setSelectedRestaurant(null)}
-            >
-              Back to Restaurants
-            </Button>
-            <Button
-              sx={{ marginLeft: 2 }}
-              variant="contained"
-              color="secondary"
-              onClick={handleAddMenuItem}
-            >
-              Add Menu Item
-            </Button>
+          <Box display="flex" gap={2} flexDirection="column" mb={2}>
+            <Box className="flex flex-col sm:flex-row justify-start mb-2 gap-2">
+              <Button
+              className="w-full sm:w-auto"
+                variant="contained"
+                color="primary"
+                onClick={() => setSelectedRestaurant(null)}
+              >
+                Back to Restaurants
+              </Button>
+              <Button
+               className="w-full sm:w-auto"
+                variant="contained"
+                color="secondary"
+                onClick={handleAddMenuItem}
+              >
+                Add Menu Item
+              </Button>
+              <TextField
+                label="Search menu items"
+                variant="outlined"
+                size="small"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+               className="w-full sm:w-auto sm:m-2"
+              />
+            </Box>
           </Box>
 
           <TableContainer
@@ -217,14 +249,16 @@ const MenuPage = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {menuItems.length === 0 ? (
+                {filteredMenuItems.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5} align="center">
-                      No menu items available.
+                      {menuItems.length === 0
+                        ? "No menu items available."
+                        : "No matching menu items found."}
                     </TableCell>
                   </TableRow>
                 ) : (
-                  menuItems.map((menuItem) => (
+                  filteredMenuItems.map((menuItem) => (
                     <TableRow key={menuItem._id}>
                       <TableCell>{menuItem.name}</TableCell>
                       <TableCell>{menuItem.description}</TableCell>
@@ -235,7 +269,10 @@ const MenuPage = () => {
                       <TableCell>
                         <IconButton
                           onClick={() =>
-                            handleEditMenuItem(menuItem._id, selectedRestaurant._id)
+                            handleEditMenuItem(
+                              menuItem._id,
+                              selectedRestaurant._id
+                            )
                           }
                         >
                           <FiEdit />

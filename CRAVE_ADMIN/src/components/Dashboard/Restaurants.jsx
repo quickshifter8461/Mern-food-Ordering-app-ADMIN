@@ -27,6 +27,7 @@ const RestaurantPage = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -139,6 +140,10 @@ const RestaurantPage = () => {
     navigate("/home");
   };
 
+  const filteredRestaurants = restaurants.filter((restaurant) =>
+    restaurant.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading)
     return (
       <Box
@@ -169,19 +174,29 @@ const RestaurantPage = () => {
         Restaurant Management
       </Typography>
 
-      {/* Add New Restaurant Button */}
-      <Box display="flex" justifyContent="flex-start" mb={2}>
-        <Button variant="contained" color="primary" onClick={handleHome}>
-          Back to Home
-        </Button>
-        <Button
-          sx={{ marginLeft: 2 }}
-          variant="contained"
-          color="primary"
-          onClick={handleAddRestaurant}
-        >
-          Add New Restaurant
-        </Button>
+      <Box display="flex" gap={2} flexDirection="column" mb={2}>
+        <Box  className="flex flex-col sm:flex-row justify-start mb-2 gap-2">
+          <Button className="w-full sm:w-auto" variant="contained" color="primary" onClick={handleHome}>
+            Back to Home
+          </Button>
+          <Button
+            className="w-full sm:w-auto sm:m-2"
+            variant="contained"
+            color="primary"
+            onClick={handleAddRestaurant}
+          >
+            Add New Restaurant
+          </Button>
+        <TextField
+          size="small"
+          variant="outlined"
+          label="Search restaurants by name"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full sm:w-auto sm:m-2"
+        />
+        </Box>
+
       </Box>
 
       {/* Restaurants Table */}
@@ -205,7 +220,7 @@ const RestaurantPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {restaurants.map((restaurant) => (
+            {filteredRestaurants.map((restaurant) => (
               <TableRow key={restaurant._id}>
                 <TableCell>{restaurant.name}</TableCell>
                 <TableCell>{restaurant.location}</TableCell>

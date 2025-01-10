@@ -6,10 +6,6 @@ import {
   Card, 
   CardContent, 
   Grid, 
-  List, 
-  ListItem, 
-  ListItemText, 
-  Drawer 
 } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 
@@ -26,6 +22,9 @@ const HomePage = () => {
   }
   const handleCoupons =() =>{
     navigate("/coupons");
+  }
+  const handleUsers =() =>{
+    navigate("/users");
   }
   return (
     <Box display="flex" height="100vh" bgcolor="background.default" color="text.primary">
@@ -114,6 +113,27 @@ const HomePage = () => {
                 </Typography>
                 <Button variant="contained" color="primary" onClick={handleCoupons}>
                   create
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card
+              sx={{
+                backgroundColor: 'background.paper',
+                boxShadow: 3,
+                borderRadius: 2,
+              }}
+            >
+              <CardContent>
+                <Typography variant="h6" fontWeight="bold">
+                  Users
+                </Typography>
+                <Typography color="text.secondary" gutterBottom>
+                  Manage users
+                </Typography>
+                <Button variant="contained" color="primary" onClick={handleUsers}>
+                  manage
                 </Button>
               </CardContent>
             </Card>

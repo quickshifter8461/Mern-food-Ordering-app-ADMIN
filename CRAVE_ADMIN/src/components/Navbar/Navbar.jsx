@@ -1,33 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Logo from "/Logo.png";
-import {
-  IconButton,
-  Avatar,
-  Badge,
-  Button,
-  AppBar,
-  Toolbar,
-  Box,
-} from "@mui/material";
-import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
+import { Avatar, Button, AppBar, Toolbar, Box } from "@mui/material";
+
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Auth/AuthContext";
 import { useApp } from "../AppContext/AppContext";
 const Navbar = ({ user = { initial: "" } }) => {
   const { isLoggedIn, setIsLoggedIn } = useAuth();
-  const { appState} = useApp()
+  const { appState } = useApp();
   const navigate = useNavigate();
 
-  // Function to fetch the cart and update item count
-
   useEffect(() => {
-    const authToken = JSON.parse(localStorage.getItem("loggedIn"))
+    const authToken = JSON.parse(localStorage.getItem("loggedIn"));
     if (authToken) {
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
     }
-    
   }, []);
 
   return (
@@ -49,7 +38,6 @@ const Navbar = ({ user = { initial: "" } }) => {
           px: { xs: 2, lg: 10 },
         }}
       >
-        {/* Logo */}
         <Box
           sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
           onClick={() => navigate("/home")}
@@ -57,7 +45,6 @@ const Navbar = ({ user = { initial: "" } }) => {
           <img src={Logo} alt="Crave Logo" width={90} />
         </Box>
 
-        {/* Navigation Links / Buttons */}
         <Box
           sx={{
             display: "flex",
@@ -67,7 +54,6 @@ const Navbar = ({ user = { initial: "" } }) => {
         >
           {isLoggedIn ? (
             <>
-              {/* User Avatar */}
               <Avatar
                 sx={{ bgcolor: "secondary.main", cursor: "pointer" }}
                 onClick={() => navigate("/my-profile")}

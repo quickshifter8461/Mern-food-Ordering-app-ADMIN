@@ -19,6 +19,7 @@ import {
   MenuItem,
   CardMedia,
   CircularProgress,
+  TextField,
 } from "@mui/material";
 import { axiosInstance } from "../../Config/api";
 import toast from "react-hot-toast";
@@ -32,6 +33,7 @@ const Orders = () => {
   const [filterStatus, setFilterStatus] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -44,7 +46,7 @@ const Orders = () => {
       } catch (error) {
         setError(error.message || "Failed to fetch restaurants.");
         console.error("Error fetching restaurants:", error);
-      }finally{
+      } finally {
         setLoading(false);
       }
     };
@@ -61,7 +63,7 @@ const Orders = () => {
       setFilteredOrders(response.data.orders);
     } catch (error) {
       console.error("Error fetching orders:", error);
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -121,6 +123,10 @@ const Orders = () => {
     navigate("/home");
   };
 
+  const filteredRestaurants = restaurants.filter((restaurant) =>
+    restaurant.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading)
     return (
       <Box
@@ -147,19 +153,28 @@ const Orders = () => {
     );
 
   return (
-    <Box sx={{ padding: 4 }}>
+    <Box p={3}>
       {!selectedRestaurant ? (
         <>
           <Typography variant="h4" gutterBottom>
             Select a Restaurant
           </Typography>
-          <Box display="flex" justifyContent="flex-start" mb={2}>
-            <Button variant="contained" color="primary" onClick={handleHome}>
+          <Box className="flex flex-col sm:flex-row justify-start mb-2 gap-2">
+            <Button className="w-full sm:w-auto" variant="contained" color="primary" onClick={handleHome}>
               Back to Home
             </Button>
+            <TextField
+              size="small"
+              label="Search restaurants"
+              variant="outlined"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full sm:w-auto sm:m-2"
+            />
           </Box>
+
           <Grid container spacing={2}>
-            {restaurants.map((restaurant) => (
+            {filteredRestaurants.map((restaurant) => (
               <Grid
                 item
                 xs={12}
@@ -203,7 +218,7 @@ const Orders = () => {
           <Typography variant="h4" gutterBottom>
             All Orders of {selectedRestaurant.name}
           </Typography>
-          <Box display="flex" justifyContent="flex-start" mb={2}>
+          <Box className="flex flex-col sm:flex-row justify-start mb-2 gap-2">
             <Button
               variant="contained"
               color="primary"
@@ -213,7 +228,7 @@ const Orders = () => {
               Back to Restaurants
             </Button>
 
-            <FormControl sx={{ minWidth: 200, marginBottom: 2, marginLeft: 2 }}>
+            <FormControl className="w-full  sm:w-[400px]">
               <InputLabel id="filter-label">Filter by Status</InputLabel>
               <Select
                 labelId="filter-label"

@@ -39,6 +39,7 @@ const CouponPage = () => {
     minOrderValue: "",
     expiryDate: "",
   });
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchCoupons = async () => {
@@ -131,6 +132,10 @@ const CouponPage = () => {
     navigate("/home");
   };
 
+  const filteredCoupons = coupons.filter((coupon) =>
+    coupon.code.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading)
     return (
       <Box
@@ -162,22 +167,32 @@ const CouponPage = () => {
         Coupon Management
       </Typography>
 
-      {/* Add New Coupon Button */}
-      <Box display="flex" justifyContent="flex-start" mb={2}>
-        <Button variant="contained" color="primary" onClick={handleHome}>
-          Back to Home
-        </Button>
-        <Button
-          sx={{ marginLeft: 2 }}
-          variant="contained"
-          color="primary"
-          onClick={() => handleOpenDialog("add")}
-        >
-          Add New Coupon
-        </Button>
+      <Box
+        display="flex" gap={2} flexDirection="column" mb={2}
+      >
+        <Box className="flex flex-col sm:flex-row justify-start mb-2 gap-2">
+          <Button className="w-full sm:w-auto" variant="contained" color="primary" onClick={handleHome}>
+            Back to Home
+          </Button>
+          <Button
+            className="w-full sm:w-auto"
+            variant="contained"
+            color="primary"
+            onClick={() => handleOpenDialog("add")}
+          >
+            Add New Coupon
+          </Button>
+          <TextField
+            label="Search by coupon code"
+            variant="outlined"
+            size="small"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full sm:w-auto sm:m-2"
+          />
+        </Box>
       </Box>
 
-      {/* Coupons Table */}
       <TableContainer
         component={Paper}
         sx={{
@@ -198,7 +213,7 @@ const CouponPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {coupons.map((coupon) => (
+            {filteredCoupons.map((coupon) => (
               <TableRow key={coupon._id}>
                 <TableCell>{coupon.code}</TableCell>
                 <TableCell>{coupon.discountPercentage}%</TableCell>
@@ -227,7 +242,6 @@ const CouponPage = () => {
         </Table>
       </TableContainer>
 
-      {/* Add/Edit Dialog */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>
           {dialogMode === "add" ? "Add New Coupon" : "Edit Coupon"}
